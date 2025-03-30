@@ -11,6 +11,25 @@ BOT_NAME = "codecrawler"
 
 SPIDER_MODULES = ["codecrawler.spiders"]
 NEWSPIDER_MODULE = "codecrawler.spiders"
+# settings.py
+
+# Basic Settings
+BOT_NAME = 'codecrawler'
+
+# Spider Modules
+SPIDER_MODULES = ['codecrawler.spiders']
+NEWSPIDER_MODULE = 'codecrawler.spiders'
+
+# Middleware, etc.
+
+# Enable or disable extensions
+
+# Enable Pipelines (Add this section)
+ITEM_PIPELINES = {
+    'codecrawler.pipelines.CodeProcessingPipeline': 1,
+}
+
+# Additional settings, such as auto-throttling, download delay, etc.
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -91,7 +110,4 @@ ROBOTSTXT_OBEY = True
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
-ITEM_PIPELINES = {
-    'codecrawler.pipelines.CleanCodePipeline': 1,
-}
 
