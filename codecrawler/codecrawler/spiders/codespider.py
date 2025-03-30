@@ -3,7 +3,7 @@ import re
 
 class CodeSpider(scrapy.Spider):
     name = "codespider"
-    start_urls = ["https://example.com"]  # Replace with the actual site
+    start_urls = ["https://huggingface.co/tasks/text-generation"]  # Replace with the actual site
 
     def clean_code(self, code):
         # Example of cleaning code (removing non-alphanumeric characters)
