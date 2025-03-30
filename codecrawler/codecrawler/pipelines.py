@@ -37,3 +37,19 @@ class SQLitePipeline:
 class CodecrawlerPipeline:
     def process_item(self, item, spider):
         return item
+import re
+
+class CleanCodePipeline:
+    def process_item(self, item, spider):
+        # Clean the 'code' field by removing any non-alphanumeric characters
+        if 'code' in item:
+            item['code'] = self.clean_code(item['code'])
+        return item
+
+    def clean_code(self, code):
+        # Example cleaning function to remove non-alphanumeric characters
+        return re.sub(r"[^a-zA-Z0-9_]", "", code)  # This can be adjusted for more complex cleaning
+
+    
+
+
