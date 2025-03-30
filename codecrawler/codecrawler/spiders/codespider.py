@@ -1,17 +1,24 @@
 import scrapy
+import re
 
 class CodeSpider(scrapy.Spider):
     name = "codespider"
     start_urls = ["https://example.com"]  # Replace with the actual site
 
+    def clean_code(self, code):
+        # Example of cleaning code (removing non-alphanumeric characters)
+        return re.sub(r"[^a-zA-Z0-9_]", "", code)  # Simple example of cleaning
+
     def parse(self, response):
-        # Extract code snippets
+        # Extract code snippets and clean them
         for code_block in response.css("code"):
+            raw_code = code_block.get()
+            cleaned_code = self.clean_code(raw_code)  # Process and clean the code
+
             yield {
-                "code": code_block.get(),
+                "code": cleaned_code,
                 "language": response.css("meta[language]::attr(content)").get(),
                 "title": response.css("h1::text").get(),
-                # Add any other metadata you want to extract
             }
 
         # Handle pagination (move to next page if available)
