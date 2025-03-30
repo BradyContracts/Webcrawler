@@ -1,1 +1,2 @@
 scrapy crawl codespider -o output.json
+scrapy crawl multi_url_spider -o output.json

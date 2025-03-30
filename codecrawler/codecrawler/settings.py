@@ -30,6 +30,8 @@ ITEM_PIPELINES = {
 }
 
 # Additional settings, such as auto-throttling, download delay, etc.
+FEED_FORMAT = 'json'  # You can use 'json', 'csv', 'xml', etc.
+FEED_URI = 'output.json'  # Change the file name/path as needed
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
