@@ -13,10 +13,13 @@ class MultiURLSpider(scrapy.Spider):
     
     def start_requests(self):
         for site_info in self.start_urls:
+            self.log(f"Scraping {site_info['site']} at {site_info['url']}")
             yield scrapy.Request(url=site_info["url"], callback=self.parse, meta={'site': site_info["site"]})
     
     def parse(self, response):
         site = response.meta['site']
+        
+        self.log(f"Parsing {site} site at {response.url}")
         
         if site == "github":
             yield from self.parse_github(response)
@@ -29,7 +32,6 @@ class MultiURLSpider(scrapy.Spider):
 
     def parse_github(self, response):
         """Parse GitHub pages (repositories, issues, etc.)"""
-        # Example: extract code blocks from README or files in the repository
         repo_name = response.url.split('/')[-1]
         code_blocks = response.xpath('//code//text()').getall()
         for code in code_blocks:
@@ -53,27 +55,25 @@ class MultiURLSpider(scrapy.Spider):
                 'question_code': question_code.strip() if question_code else None
             }
 
-def parse_geeksforgeeks(self, response):
-    """Parse GeeksforGeeks articles or tutorials"""
-    article_title = response.xpath('//h1/text()').get()
+    def parse_geeksforgeeks(self, response):
+        """Parse GeeksforGeeks articles or tutorials"""
+        article_title = response.xpath('//h1/text()').get()
 
-    # Trying a different method to capture any visible code blocks or inline code
-    article_code = response.xpath('//pre/text()').getall()  # Look for <pre> tags first
-    
-    # If no code found in <pre> tags, check for <code> tags in the content
-    if not article_code:
-        article_code = response.xpath('//code/text()').getall()
+        # Try capturing all <pre> and <code> tags to gather code
+        article_code = response.xpath('//pre/text()').getall()
 
-    # Clean up the extracted code
-    code = "\n".join(article_code).strip() if article_code else "No code found."
+        # If no code found in <pre> tags, check for <code> tags in the content
+        if not article_code:
+            article_code = response.xpath('//code/text()').getall()
 
-    yield {
-        'site': 'geeksforgeeks',
-        'article_title': article_title.strip() if article_title else None,
-        'code': code
-    }
-    
-    
+        # Clean up the extracted code (Remove extra spaces, newlines)
+        code = "\n".join([line.strip() for line in article_code if line.strip()]).strip() if article_code else "No code found."
+
+        yield {
+            'site': 'geeksforgeeks',
+            'article_title': article_title.strip() if article_title else None,
+            'code': code
+        }
 
     def parse_codepen(self, response):
         """Parse CodePen pages"""
