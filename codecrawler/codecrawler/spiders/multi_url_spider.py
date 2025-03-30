@@ -56,17 +56,24 @@ class MultiURLSpider(scrapy.Spider):
 def parse_geeksforgeeks(self, response):
     """Parse GeeksforGeeks articles or tutorials"""
     article_title = response.xpath('//h1/text()').get()
+
+    # Trying a different method to capture any visible code blocks or inline code
+    article_code = response.xpath('//pre/text()').getall()  # Look for <pre> tags first
     
-    # Updated XPath to capture code inside <pre> tags
-    article_code = response.xpath('//pre/text()').getall()
-    
-    # Join all code snippets if there are multiple and remove any extra whitespace
-    code = "\n".join(article_code).strip()
+    # If no code found in <pre> tags, check for <code> tags in the content
+    if not article_code:
+        article_code = response.xpath('//code/text()').getall()
+
+    # Clean up the extracted code
+    code = "\n".join(article_code).strip() if article_code else "No code found."
+
     yield {
         'site': 'geeksforgeeks',
         'article_title': article_title.strip() if article_title else None,
         'code': code
     }
+    
+    
 
     def parse_codepen(self, response):
         """Parse CodePen pages"""
